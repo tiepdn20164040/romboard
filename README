@@ -1,0 +1,11 @@
+ROMBoard : The Poor Man's Synthesizer
+=====================================
+
+Rom board is a piece of hardware I wrote for the Spring 2013 HackNY hackathon.
+
+It demostrates the use of the WM8731 audio codec on Altera's DE2 development board.
+
+This circuit causes the switches on the board to map a certain set of notes
+to the four pushbuttons on the DE2. In this case, the note mappings have
+been optimized to play Herbie Hancock's "Chameleon". Remapping the keys for
+another song requires changing the ROM used by the hardware.
