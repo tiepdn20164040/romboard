@@ -250,6 +250,7 @@ begin
 
   octave <= unsigned(SW(1 downto 0));
   volume <= SW(4 downto 2) & x"000";
+  LEDG(3 downto 0) <= not KEY;
   
   SYNTH : entity work.synth_top port map (
     clk => main_clock,
@@ -269,7 +270,7 @@ begin
   HEX7     <= (others => '1'); 
   HEX6     <= (others => '1'); 
   HEX5     <= (others => '1'); 
-  LEDG     <= (others => '0');
+  LEDG(7 downto 4) <= (others => '0');
   LEDR     <= (others => '0');
   LCD_ON   <= '1';
   LCD_BLON <= '1';
