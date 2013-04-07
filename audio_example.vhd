@@ -212,7 +212,7 @@ architecture datapath of audio_example is
   signal audio_clock : std_logic;
   signal audio_request : std_logic;
   signal main_clock : std_logic;
-  signal reset_n : std_logic;
+  signal reset_n : std_logic := '1';
 begin
 
   AUD_XCK <= audio_clock;
