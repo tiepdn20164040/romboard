@@ -20,7 +20,7 @@ end note_decoder;
 
 
 architecture rtl of note_decoder is
-    signal sweep_index : unsigned(3 downto 0) := "1111";
+    signal sweep_index : unsigned(3 downto 0) := x"c";
     signal note_index : unsigned(1 downto 0) := "11";
     signal cur_switch : std_logic;
     type divider_mapping_type is array(0 to 3) of unsigned(19 downto 0);
@@ -40,15 +40,21 @@ begin
         end if;
     end process;
 
+    hex0 <= hex_bank(0);
+    hex1 <= hex_bank(1);
+    hex2 <= hex_bank(2);
+    hex3 <= hex_bank(3);
+
     cur_switch <= note_switches(to_integer(sweep_index));
 
     process (clk)
     begin
         if rising_edge(clk) then
-            sweep_index <= sweep_index - "001";
-        
-            if sweep_index = x"00" then
-                note_index <= "00";
+            if sweep_index = x"0" then
+                note_index <= "11";
+                sweep_index  <= x"c";
+            else
+                sweep_index <= sweep_index - "001";
             end if;
             
             if cur_switch = '1' then

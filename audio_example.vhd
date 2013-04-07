@@ -215,6 +215,7 @@ architecture datapath of audio_example is
   signal reset_n : std_logic := '1';
   signal aud_data : std_logic_vector(15 downto 0);
   signal octave : unsigned(1 downto 0);
+  signal volume : std_logic_vector(14 downto 0);
 begin
 
   AUD_XCK <= audio_clock;
@@ -248,10 +249,11 @@ begin
   );
 
   octave <= unsigned(SW(1 downto 0));
+  volume <= SW(4 downto 2) & x"000";
   
   SYNTH : entity work.synth_top port map (
     clk => main_clock,
-    volume => SW(4 downto 2) & (12 downto 0 => '0'),
+    volume => volume,
     aud_data => aud_data,
 
     hex0 => hex0,

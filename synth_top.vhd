@@ -4,7 +4,7 @@ use ieee.numeric_std.all;
 
 entity synth_top is
     port (clk : in std_logic;
-          volume : in std_logic_vector(15 downto 0);
+          volume : in std_logic_vector(14 downto 0);
           aud_data : out std_logic_vector(15 downto 0);
           hex0 : out std_logic_vector(6 downto 0);
           hex1 : out std_logic_vector(6 downto 0);
@@ -22,6 +22,8 @@ architecture rtl of synth_top is
     signal pressed : std_logic;
     signal clkbank : std_logic_vector(3 downto 0);
     signal divclk : std_logic;
+    signal highlvl : std_logic_vector(15 downto 0);
+    signal lowlvl : std_logic_vector(15 downto 0);
 begin
     PE : entity work.priority_enc port map (
         unencoded => push_buttons,
@@ -54,6 +56,10 @@ begin
     end generate BANK_GEN;
 
     divclk <= clkbank(to_integer(key));
+    highlvl <= '0' & volume;
+    lowlvl <= '1' & volume;
 
-    aud_data <= volume when (divclk and pressed) = '1' else x"0000";
+    aud_data <= x"0000" when pressed = '0' else
+                highlvl when divclk = '1' else
+                lowlvl  when divclk = '0';
 end rtl;

@@ -16,12 +16,14 @@ architecture rtl of divider_table is
         x"41fbe", x"3e47e", x"3ac8a", x"377c8", x"345f6", x"316ee", x"2ea8c"
     );
     signal raw_divider : unsigned(19 downto 0);
+    signal octave_shift : unsigned(5 downto 0);
 begin
     raw_divider <= divider_lut(to_integer(index));
+    octave_shift <= "0000" & octave;
     
     RS : entity work.rshift port map (
         number => raw_divider,
-        shiftby => "0000" & octave,
+        shiftby => octave_shift,
         shifted => divider
     );
 end rtl;
