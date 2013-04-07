@@ -213,6 +213,8 @@ architecture datapath of audio_example is
   signal audio_request : std_logic;
   signal main_clock : std_logic;
   signal reset_n : std_logic := '1';
+  signal aud_data : std_logic_vector(15 downto 0);
+  signal octave : unsigned(1 downto 0);
 begin
 
   AUD_XCK <= audio_clock;
@@ -232,10 +234,10 @@ begin
 
   V1: de2_wm8731_audio port map (
     clk => audio_clock,
-    reset_n => reset_n,
-    test_mode => '1',                   -- Output a sine wave
+    reset_n => '1',
+    test_mode => '0',                   -- Output a sine wave
     audio_request => audio_request,
-    data => x"0000",
+    data => aud_data,
   
     -- Audio interface signals
     AUD_ADCLRCK  => AUD_ADCLRCK,
@@ -244,15 +246,27 @@ begin
     AUD_DACDAT   => AUD_DACDAT,
     AUD_BCLK     => AUD_BCLK
   );
+
+  octave <= unsigned(SW(1 downto 0));
   
-  HEX7     <= "0001001"; -- Leftmost
-  HEX6     <= "0000110";
-  HEX5     <= "1000111";
-  HEX4     <= "1000111";
-  HEX3     <= "1000000";
-  HEX2     <= (others => '1');
-  HEX1     <= (others => '1');
-  HEX0     <= (others => '1');          -- Rightmost
+  SYNTH : entity work.synth_top port map (
+    clk => main_clock,
+    volume => SW(4 downto 2) & (12 downto 0 => '0'),
+    aud_data => aud_data,
+
+    hex0 => hex0,
+    hex1 => hex1,
+    hex2 => hex2,
+    hex3 => hex3,
+
+    note_switches => SW(17 downto 5),
+    octave => octave,
+    push_buttons => KEY
+  );
+  
+  HEX7     <= (others => '1'); 
+  HEX6     <= (others => '1'); 
+  HEX5     <= (others => '1'); 
   LEDG     <= (others => '0');
   LEDR     <= (others => '0');
   LCD_ON   <= '1';
