@@ -25,7 +25,7 @@ architecture rtl of synth_top is
     signal highlvl : std_logic_vector(15 downto 0);
     signal lowlvl : std_logic_vector(15 downto 0);
 begin
-    PE : entity work.priority_enc port map (
+    PE : entity work.priority_enc4 port map (
         unencoded => push_buttons,
         encoded => key,
         triggered => pressed

@@ -9,13 +9,13 @@ use ieee.numeric_std.all;
 -- anything else gives 00
 -- triggered is high if at least one of the inputs is low
 
-entity priority_enc is
+entity priority_enc4 is
     port (unencoded : in std_logic_vector(3 downto 0);
           encoded   : out unsigned(1 downto 0);
           triggered : out std_logic);
-end priority_enc;
+end priority_enc4;
 
-architecture rtl of priority_enc is
+architecture rtl of priority_enc4 is
 begin
     encoded <= "11" when unencoded(3) = '0' else
                "10" when unencoded(2) = '0' else

@@ -20,15 +20,14 @@ end note_decoder;
 
 
 architecture rtl of note_decoder is
-    signal sweep_index : unsigned(3 downto 0) := x"c";
-    signal note_index : signed(2 downto 0) := "011";
-    signal cur_switch : std_logic;
+    signal rom_addr : unsigned(3 downto 0);
     type divider_mapping_type is array(0 to 3) of unsigned(19 downto 0);
     signal divider_mapping : divider_mapping_type;
     type index_mapping_type is array(0 to 3) of unsigned(3 downto 0);
     signal index_mapping : index_mapping_type;
     type hex_bank_type is array(0 to 3) of std_logic_vector(6 downto 0);
     signal hex_bank : hex_bank_type;
+    signal rom_octaves : std_logic_vector(3 downto 0); 
 begin
     process (clk)
     begin
@@ -45,29 +44,26 @@ begin
     hex2 <= hex_bank(2);
     hex3 <= hex_bank(3);
 
-    cur_switch <= note_switches(to_integer(sweep_index));
+    PE : entity work.priority_enc13 port map (
+        unencoded => note_switches,
+        encoded => rom_addr
+    );
 
-    process (clk)
-    begin
-        if rising_edge(clk) then
-            if sweep_index = x"0" then
-                note_index <= "011";
-                sweep_index  <= x"c";
-            else
-                sweep_index <= sweep_index - x"1";
-            end if;
-            
-            if cur_switch = '1' and note_index(2) = '0' then
-                index_mapping(to_integer(note_index)) <= sweep_index;
-                note_index <= note_index - "001";
-            end if;
-        end if;
-    end process;
+    ROM : entity work.chameleon port map (
+        addr => rom_addr,
+        
+        note3 => index_mapping(3),
+        note2 => index_mapping(2),
+        note1 => index_mapping(1),
+        note0 => index_mapping(0),
+
+        octaves => rom_octaves
+    );
 
     GEN_MAPPINGS : for i in 0 to 3 generate
         DIV_TAB : entity work.divider_table port map (
             index => index_mapping(i),
-            octave => octave,
+            octave => octave + ('0' & rom_octaves(i)),
             divider => divider_mapping(i)
         );
 
