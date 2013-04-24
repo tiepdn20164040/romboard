@@ -57,7 +57,7 @@ begin
 
     divclk <= clkbank(to_integer(key));
     highlvl <= '0' & volume;
-    lowlvl <= '1' & volume;
+    lowlvl <= '1' & (not volume);
 
     aud_data <= x"0000" when pressed = '0' else
                 highlvl when divclk = '1' else
